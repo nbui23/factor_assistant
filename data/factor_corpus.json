@@ -1,0 +1,52 @@
+[
+    {
+      "topic": "Stack-based programming in Factor",
+      "explanation": "Factor is a stack-based language. Operations typically consume values from the stack and push results back onto it.",
+      "example": "3 4 + .  ! Pushes 3, then 4 onto the stack, adds them, and prints the result (7)"
+    },
+    {
+      "topic": "Basic stack manipulation words",
+      "explanation": "Factor provides words for manipulating the stack directly.",
+      "example": "dup   ! Duplicates the top item on the stack\ndrop  ! Removes the top item from the stack\nswap  ! Swaps the top two items on the stack"
+    },
+    {
+      "topic": "Quotations",
+      "explanation": "Quotations are anonymous functions in Factor, enclosed in square brackets.",
+      "example": "[ 2 + ] ! A quotation that adds 2 to the top of the stack\n3 [ 2 + ] call . ! Outputs 5"
+    },
+    {
+      "topic": "Defining words",
+      "explanation": "New words (functions) are defined using the `:` syntax.",
+      "example": ": square ( n -- n^2 ) dup * ;\n5 square . ! Outputs 25"
+    },
+    {
+      "topic": "Stack effect comments",
+      "explanation": "Stack effect comments describe inputs and outputs of a word.",
+      "example": ": celsius>fahrenheit ( C -- F )\n    32 + 9 * 5 / ;"
+    },
+    {
+      "topic": "Conditionals",
+      "explanation": "Factor uses words like `if`, `when`, and `unless` for conditional execution.",
+      "example": ": abs ( n -- |n| )\n    dup 0 < [ neg ] when ;"
+    },
+    {
+      "topic": "Loops",
+      "explanation": "Factor provides various looping constructs like `times`, `each`, and `while`.",
+      "example": "5 [ \"Hello\" print ] times"
+    },
+    {
+      "topic": "Arrays",
+      "explanation": "Arrays in Factor are created using curly braces.",
+      "example": "{ 1 2 3 4 5 } ! Creates an array with these elements"
+    },
+    {
+      "topic": "Vocabularies",
+      "explanation": "Factor organizes code into vocabularies (similar to modules or packages in other languages).",
+      "example": "USING: math math.functions io ;\nIN: my-vocab\n\n: pythagoras ( a b -- c )\n    [ sq ] bi@ + sqrt ;"
+    },
+    {
+      "topic": "Combinators",
+      "explanation": "Combinators are higher-order functions that control execution flow.",
+      "example": "{ 1 2 3 4 5 } [ sq ] map ! Squares each element: { 1 4 9 16 25 }"
+    }
+  ]
