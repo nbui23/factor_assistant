@@ -1,21 +1,39 @@
 from langchain.llms import HuggingFacePipeline
 from langchain.prompts import PromptTemplate
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
-from src.config import LLM_MODEL
 import torch
 
+import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
+from langchain.llms import HuggingFacePipeline
+
 def create_language_model():
-    tokenizer = AutoTokenizer.from_pretrained(LLM_MODEL)
-    model = AutoModelForCausalLM.from_pretrained(LLM_MODEL, torch_dtype=torch.float16, device_map="auto")
+    model_name = "codellama/CodeLlama-7b-Instruct-hf"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+        dtype = torch.float16
+    else:
+        device = torch.device("cpu")
+        dtype = torch.float32
+    
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name,
+        torch_dtype=dtype,
+        device_map="auto",
+        load_in_8bit=True if torch.cuda.is_available() else False 
+    )
     
     pipe = pipeline(
         "text-generation",
         model=model, 
-        tokenizer=tokenizer, 
+        tokenizer=tokenizer,
         max_length=2048,
-        temperature=0.7,
+        temperature=0.2,
         top_p=0.95,
-        repetition_penalty=1.15
+        repetition_penalty=1.15,
+        device=device
     )
     
     return HuggingFacePipeline(pipeline=pipe)

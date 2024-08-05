@@ -3,7 +3,7 @@ from src.data_loader import load_corpus, prepare_documents, split_documents
 from src.embeddings import create_vectorstore
 from src.retriever import create_retriever
 from src.language_model import create_language_model, create_prompt_template
-from src.qa_chain import create_qa_chain
+from langchain.chains import RetrievalQA
 
 def setup_qa_system():
     corpus = load_corpus(CORPUS_PATH)
@@ -16,7 +16,15 @@ def setup_qa_system():
     llm = create_language_model()
     prompt = create_prompt_template()
     
-    return create_qa_chain(llm, retriever, prompt)
+    qa_chain = RetrievalQA.from_chain_type(
+        llm=llm,
+        chain_type="stuff",
+        retriever=retriever,
+        return_source_documents=True,
+        chain_type_kwargs={"prompt": prompt}
+    )
+    
+    return qa_chain
 
 def ask_question(qa_chain, question):
     result = qa_chain({"query": question})
