@@ -1,50 +1,38 @@
-from langchain.llms import HuggingFacePipeline
+from langchain.llms import HuggingFaceHub
 from langchain.prompts import PromptTemplate
-from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
-import torch
+from dotenv import load_dotenv
+import os
 
-import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
-from langchain.llms import HuggingFacePipeline
+load_dotenv()
 
 def create_language_model():
-    model_name = "codellama/CodeLlama-7b-Instruct-hf"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    huggingfacehub_api_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
     
-    if torch.cuda.is_available():
-        device = torch.device("cuda")
-        dtype = torch.float16
-    else:
-        device = torch.device("cpu")
-        dtype = torch.float32
+    print(f"API Token: {'*' * len(huggingfacehub_api_token) if huggingfacehub_api_token else 'Not found'}")
     
-    model = AutoModelForCausalLM.from_pretrained(
-        model_name,
-        torch_dtype=dtype,
-        device_map="auto",
-        load_in_8bit=True if torch.cuda.is_available() else False 
-    )
+    if not huggingfacehub_api_token:
+        raise ValueError("HUGGINGFACEHUB_API_TOKEN not found in environment variables")
     
-    pipe = pipeline(
-        "text-generation",
-        model=model, 
-        tokenizer=tokenizer,
-        max_length=2048,
-        temperature=0.2,
-        top_p=0.95,
-        repetition_penalty=1.15,
-        device=device
-    )
-    
-    return HuggingFacePipeline(pipeline=pipe)
+    try:
+        llm = HuggingFaceHub(
+            repo_id="google/flan-t5-large",
+            model_kwargs={"temperature": 0.3, "max_length": 512},
+            huggingfacehub_api_token=huggingfacehub_api_token
+        )
+        print("Language model created successfully")
+        return llm
+    except Exception as e:
+        print(f"Error creating language model: {str(e)}")
+        raise
 
 def create_prompt_template():
-    template = """[INST] You are an AI assistant specializing in the Factor programming language. Use the following relevant information to answer the user's question about Factor:
+    template = """You are an AI assistant specializing in the Factor programming language. Your task is to provide clear and accurate answers based on the given context and your knowledge of programming.
 
+    Context information about Factor:
     {context}
 
-    User question: {question}
+    Human: {question}
 
-    Provide a clear, accurate answer using the given information and your general programming knowledge. If you're unsure, say so. [/INST]
+    Assistant: Based on the context provided and my knowledge of programming languages, I can answer your question about Factor. 
     """
     return PromptTemplate(template=template, input_variables=["context", "question"])

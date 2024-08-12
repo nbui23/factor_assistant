@@ -1,41 +1,27 @@
-from src.config import CORPUS_PATH
-from src.data_loader import load_corpus, prepare_documents, split_documents
-from src.embeddings import create_vectorstore
-from src.retriever import create_retriever
-from src.language_model import create_language_model, create_prompt_template
-from langchain.chains import RetrievalQA
+from src import setup_qa_system, ask_question
 
-def setup_qa_system():
-    corpus = load_corpus(CORPUS_PATH)
-    documents = prepare_documents(corpus)
-    splits = split_documents(documents)
-    
-    vectorstore = create_vectorstore(splits)
-    retriever = create_retriever(vectorstore)
-    
-    llm = create_language_model()
-    prompt = create_prompt_template()
-    
-    qa_chain = RetrievalQA.from_chain_type(
-        llm=llm,
-        chain_type="stuff",
-        retriever=retriever,
-        return_source_documents=True,
-        chain_type_kwargs={"prompt": prompt}
-    )
-    
-    return qa_chain
-
-def ask_question(qa_chain, question):
-    result = qa_chain({"query": question})
-    return result["result"]
+def main():
+    print("Initializing Factor Programming Assistant...")
+    try:
+        llm, retriever, prompt_template = setup_qa_system()
+        print("Factor Programming Assistant is ready!")
+        
+        while True:
+            question = input("\nAsk a question about Factor (or type 'exit' to quit): ")
+            if question.lower() == 'exit':
+                break
+            print("\nThinking...")
+            answer = ask_question(llm, retriever, prompt_template, question)
+            print(f"\nAnswer: {answer}")
+            
+            feedback = input("\nWas this answer helpful? (yes/no): ")
+            if feedback.lower() == 'no':
+                print("I'm sorry the answer wasn't helpful. I'll try to improve in the future.")
+        
+        print("\nThank you for using the Factor Programming Assistant!")
+    except Exception as e:
+        print(f"An error occurred while setting up the system: {str(e)}")
+        print("Please check your configuration and try again.")
 
 if __name__ == "__main__":
-    qa_system = setup_qa_system()
-    
-    while True:
-        question = input("Ask a question about Factor (or type 'exit' to quit): ")
-        if question.lower() == 'exit':
-            break
-        answer = ask_question(qa_system, question)
-        print(f"Answer: {answer}\n")
+    main()

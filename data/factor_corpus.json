@@ -1,8 +1,13 @@
 [
   {
     "topic": "Introduction to Factor",
-    "explanation": "Factor is a stack-based, concatenative programming language created by Slava Pestov. It emphasizes simplicity, composability, and interactive development.",
+    "explanation": "Factor is a stack-based, concatenative programming language created by Slava Pestov in 2003. It emphasizes simplicity, composability, and interactive development. Factor is inspired by Forth, Lisp, and Joy, and is open-source with active community development.",
     "example": "! This is a comment in Factor\n3 4 + .  ! Pushes 3 and 4 onto the stack, adds them, and prints the result (7)"
+  },
+  {
+    "topic": "Core Language Concepts",
+    "explanation": "Factor is a stack-based, concatenative programming language that uses reverse Polish notation (RPN) for expressions. It is dynamically typed and emphasizes function composition.",
+    "example": "2 3 + 4 *  ! Computes (2 + 3) * 4 and leaves the result (20) on the stack"
   },
   {
     "topic": "Stack-based programming",
@@ -13,6 +18,11 @@
     "topic": "Basic stack manipulation",
     "explanation": "Factor provides words for manipulating the stack directly: dup (duplicate), drop, swap, over, rot, -rot, nip, tuck, pick, and more.",
     "example": "1 2 3  ! Stack: 1 2 3\ndup    ! Stack: 1 2 3 3\nswap   ! Stack: 1 3 2 3\nrot    ! Stack: 3 2 3 1\ndrop   ! Stack: 3 2 3"
+  },
+  {
+    "topic": "Data Types",
+    "explanation": "Factor supports various data types including numbers (integers, floating-point, rationals, complex), strings, arrays, hashtables, vectors, and tuples.",
+    "example": "42      ! Integer\n3.14    ! Float\n2/3     ! Rational\n{ 1 2 3 }  ! Array\nH{ { \"key\" \"value\" } }  ! Hashtable"
   },
   {
     "topic": "Defining words",
@@ -35,7 +45,7 @@
     "example": "{ 1 2 3 4 5 } [ sq ] map .  ! Prints { 1 4 9 16 25 }\n{ 1 2 3 4 5 } [ even? ] filter .  ! Prints { 2 4 }"
   },
   {
-    "topic": "Conditionals",
+    "topic": "Control Flow",
     "explanation": "Factor uses words like if, when, unless, cond, and case for conditional execution. These work with quotations.",
     "example": ": abs ( n -- |n| ) dup 0 < [ neg ] when ;\n: sign ( n -- -1/0/1 ) dup 0 < [ drop -1 ] [ 0 > [ 1 ] [ 0 ] if ] if ;"
   },
@@ -55,7 +65,7 @@
     "example": "H{ { \"a\" 1 } { \"b\" 2 } } \n    \"a\" of .  ! Prints 1\n    \"c\" 3 swap set-at\n    .  ! Prints H{ { \"a\" 1 } { \"b\" 2 } { \"c\" 3 } }"
   },
   {
-    "topic": "Vocabularies",
+    "topic": "Vocabularies and namespaces",
     "explanation": "Factor organizes code into vocabularies, similar to modules or packages in other languages. The USING: directive imports vocabularies.",
     "example": "USING: math math.functions io ;\nIN: my-vocab\n\n: pythagoras ( a b -- c ) [ sq ] bi@ + sqrt ;"
   },
@@ -111,7 +121,7 @@
   },
   {
     "topic": "Concurrency",
-    "explanation": "Factor supports concurrent programming through its threading model and provides primitives for synchronization.",
+    "explanation": "Factor supports concurrent programming through its threading model and provides primitives for synchronization. It includes features like threads, futures, promises, and channels.",
     "example": "USING: threads concurrency concurrency.combinators ;\n: task ( -- ) \"I'm running in a thread!\" print ;\n[ task ] in-thread\n\n: parallel-task ( -- ) 5 [ task ] parallel-times ;"
   },
   {
@@ -130,68 +140,138 @@
     "example": "SYNTAX: ENUM: (:) >enum define-enum ;\n\nENUM: color { red green blue } ;\ncolor red .  ! Prints 0"
   },
   {
-    "topic": "Vocabularies and namespaces",
-    "explanation": "Factor's vocabulary system provides namespacing and helps organize code into reusable modules.",
-    "example": "IN: my-math\n: square ( n -- n^2 ) dup * ;\n\nUSING: my-math ;\n5 square .  ! Prints 25"
-  },
-  {
     "topic": "Testing framework",
     "explanation": "Factor includes a built-in unit testing framework to ensure code correctness.",
     "example": "USE: tools.test\n\n{ 4 } [ 2 2 + ] unit-test\n{ \"Factor\" } [ \"Fa\" \"ctor\" append ] unit-test"
   },
   {
     "topic": "Metaprogramming",
-    "explanation": "Factor's powerful metaprogramming capabilities allow for code generation and reflection.",
+    "explanation": "Factor's powerful metaprogramming capabilities allow for code generation and reflection. This includes features like parse, call, and eval.",
     "example": ": define-doubler ( word -- )\n    dup \">2\" prepend create-in\n    [ 2 * ] curry define-inline ;\n\n\\ square define-doubler\n5 >2square .  ! Prints 50"
   },
   {
-    "topic": "Bubble Sort in Factor",
-    "explanation": "Bubble sort is a simple sorting algorithm that repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order.",
-    "example": ": bubble-sort ( seq -- sorted-seq )\n    dup length 1 - [\n        dup length 1 - [\n            2dup nth swap 1 + nth < [\n                2dup 1 + exchange\n            ] when\n        ] each drop\n    ] times ;"
+    "topic": "Libraries and Frameworks",
+    "explanation": "Factor comes with a rich set of libraries and frameworks, including a UI framework for creating graphical user interfaces, a web framework for building web applications, database libraries, and image processing libraries.",
+    "example": "USING: ui ui.gadgets ui.gadgets.buttons ;\n\n: <hello-button> ( -- button )\n    \"Click me!\" [\n        \"Hello, World!\" print\n    ] <button> ;"
   },
   {
-    "topic": "Quick Sort in Factor",
-    "explanation": "Quick sort is an efficient, recursive divide-and-conquer sorting algorithm. It works by selecting a 'pivot' element and partitioning the other elements into two sub-arrays.",
-    "example": ": partition ( seq -- left pivot right )\n    dup first\n    [ dup first < ] partition\n    rot 1 tail swap ;\n\n: quicksort ( seq -- sorted )\n    dup length 2 < [\n        partition\n        [ quicksort ] dip\n        quicksort\n        swap prefix append\n    ] unless ;"
+    "topic": "Development Environment",
+    "explanation": "Factor comes with its own IDE and listener, which provides an interactive environment for development. It also includes a built-in profiler for performance optimization.",
+    "example": "! Run this in the Factor IDE\nUSING: tools.profiler ;\n\n: fibonacci ( n -- n' )\n    dup 2 <= [ ] [ dup 1 - fibonacci swap 2 - fibonacci + ] if ;\n\n[ 20 fibonacci drop ] profile"
   },
   {
-    "topic": "Binary Search in Factor",
-    "explanation": "Binary search is a search algorithm that finds the position of a target value within a sorted array. It compares the target value to the middle element of the array.",
-    "example": ": binary-search ( value seq -- index/f )\n    [ dup length 0 > ] [\n        2dup length 2 /i [ nth ] keep\n        2dup < [\n            drop 1 + tail-slice binary-search\n        ] [\n            > [ head-slice binary-search ]\n            [ 2drop length 2 /i ]\n            if\n        ] if\n    ] while 2drop f ;"
+    "topic": "History and Evolution of Factor",
+    "explanation": "Factor was created by Slava Pestov in 2003 as a personal project. It was inspired by Forth, Lisp, and Joy. Over the years, it has evolved from a simple interpreter to a sophisticated, self-hosting language with a powerful optimizing compiler.",
+    "example": "! Factor versions:\n! 2003: Initial release\n! 2008: Factor 0.90 (first stable release)\n! 2010: Factor 0.93 (major performance improvements)\n! 2019: Factor 0.98 (latest stable release as of 2021)"
   },
   {
-    "topic": "Depth-First Search in Factor",
-    "explanation": "Depth-first search (DFS) is an algorithm for traversing or searching tree or graph data structures. It starts at a root node and explores as far as possible along each branch before backtracking.",
-    "example": "USING: assocs kernel sequences sets ;\n\n: dfs ( graph start -- visited )\n    H{ } clone\n    [ over at [ dfs ] each adjoin ] curry each-recursive\n    nip ;"
+    "topic": "Factor's Design Philosophy",
+    "explanation": "Factor's design emphasizes simplicity, composability, and interactivity. It aims to combine the best features of stack-based and functional programming paradigms while providing a modern development environment.",
+    "example": "! Factor principles:\n! 1. Everything is a function (word)\n! 2. Emphasize composition over abstraction\n! 3. Interactive development with immediate feedback\n! 4. Strong metaprogramming capabilities"
   },
   {
-    "topic": "Breadth-First Search in Factor",
-    "explanation": "Breadth-first search (BFS) is an algorithm for traversing or searching tree or graph data structures. It starts at a root node and explores all of the neighbor nodes at the present depth prior to moving on to the nodes at the next depth level.",
-    "example": "USING: assocs deques kernel sequences sets ;\n\n: bfs ( graph start -- visited )\n    <deque> [ push-front ] keep\n    H{ } clone\n    [ [ pop-back ] dip\n      [ over at [ push-front ] with each ]\n      [ adjoin ] bi\n    ] curry until\n    nip ;"
+    "topic": "Factor vs Other Stack-Based Languages",
+    "explanation": "While Factor is inspired by Forth, it introduces several modern features. Unlike Forth, Factor is strongly typed (at runtime), garbage-collected, and includes high-level features like object-oriented programming and metaprogramming.",
+    "example": "! Forth: : SQUARE DUP * ;\n! Factor: : square ( n -- n^2 ) dup * ;\n\n! Factor adds type checking and stack effect comments"
   },
   {
-    "topic": "Merge Sort in Factor",
-    "explanation": "Merge sort is an efficient, stable sorting algorithm that makes use of the divide and conquer strategy. Conceptually, it divides the unsorted list into n sublists, each containing one element, and then repeatedly merges sublists to produce new sorted sublists until there is only one sublist remaining.",
-    "example": ": merge ( seq1 seq2 -- merged )\n    { } [ 2dup [ empty? ] either? not ]\n    [ 2dup [ first ] bi@ < ?\n      [ [ uncons ] dip swap ] [ swap uncons ] if\n      [ prefix ] dip\n    ] while nip append ;\n\n: merge-sort ( seq -- sorted )\n    dup length 1 <= [\n        dup length 2 /i cut\n        [ merge-sort ] bi@\n        merge\n    ] unless ;"
+    "topic": "Factor vs Functional Languages",
+    "explanation": "Factor shares many concepts with functional languages like Haskell or Lisp. However, it uses a stack for passing arguments instead of nested function calls, leading to a more point-free style of programming.",
+    "example": "! Haskell: map (\\x -> x * x) [1, 2, 3, 4, 5]\n! Factor: { 1 2 3 4 5 } [ dup * ] map"
   },
   {
-    "topic": "Dijkstra's Algorithm in Factor",
-    "explanation": "Dijkstra's algorithm is an algorithm for finding the shortest paths between nodes in a graph, which may represent, for example, road networks.",
-    "example": "USING: assocs heaps kernel math sequences ;\n\n: dijkstra ( graph start -- distances )\n    swap [ drop 1/0. ] H{ } map-as\n    [ 0 ] dip [ set-at ] keep\n    <min-heap> [ [ swap ] dip push-all ] keep\n    [ dup heap-empty? not ]\n    [ dup pop\n      [ [ over ] dip at ] 2keep\n      [ at ] curry map\n      [ [ + ] [ set-at ] 3bi ] curry assoc-each\n    ] while\n    drop ;"
+    "topic": "Advanced Stack Manipulation",
+    "explanation": "Factor provides advanced stack manipulation words that can significantly simplify complex operations. These include bi, tri, bi@, tri@, and others.",
+    "example": "! Using bi to apply two quotations to the same value\n5 [ sq ] [ sqrt ] bi . .  ! Prints: 25 2.236067977499790\n\n! Using tri@ to apply three quotations to three values\n1 2 3 [ 1 + ] [ 2 + ] [ 3 + ] tri@ . . .  ! Prints: 2 4 6"
   },
   {
-    "topic": "Storing Numbers in Factor",
-    "explanation": "In Factor, numbers are stored directly on the stack. You can simply write a number to push it onto the stack. Factor supports various numeric types including integers, floating-point numbers, and rationals.",
-    "example": "5 ! Pushes the integer 5 onto the stack\n3.14 ! Pushes the floating-point number 3.14 onto the stack\n2/3 ! Pushes the rational number 2/3 onto the stack"
+    "topic": "Algebraic Data Types in Factor",
+    "explanation": "While Factor doesn't have built-in algebraic data types like some functional languages, you can simulate them using tuples and unions.",
+    "example": "TUPLE: leaf value ;\nTUPLE: node left right ;\nUNION: tree leaf node ;\n\n: <leaf> ( value -- leaf ) leaf boa ;\n: <node> ( left right -- node ) node boa ;\n\n: tree-sum ( tree -- n )\n    {\n        { [ leaf? ] [ value>> ] }\n        { [ node? ] [ [ left>> tree-sum ] [ right>> tree-sum ] bi + ] }\n    } cond ;"
   },
   {
-    "topic": "Variables in Factor",
-    "explanation": "While Factor primarily uses the stack for data manipulation, you can also store numbers (and other values) in variables using the `!` word to set a variable and the `@` word to retrieve its value.",
-    "example": "5 \"x\" set ! Stores 5 in a variable named x\n\"x\" get ! Retrieves the value of x and puts it on the stack"
+    "topic": "Factor's Type System",
+    "explanation": "Factor uses a dynamic type system with runtime type checking. It also includes a static type inference system for optimization, though this is transparent to the programmer.",
+    "example": "TYPED: factorial ( n: integer -- result: integer )\n    dup 2 <= [ ] [ dup 1 - factorial * ] if ;\n\n! The : integer type annotation helps the compiler optimize"
   },
   {
-    "topic": "Arrays in Factor",
-    "explanation": "For storing multiple numbers, you can use arrays in Factor. Arrays are created using curly braces {}.",
-    "example": "{ 1 2 3 4 5 } ! Creates an array with five integers\n{ 1.0 2.5 3.7 } ! Creates an array with three floating-point numbers"
+    "topic": "Factor's Memory Management",
+    "explanation": "Factor uses automatic memory management with a generational garbage collector. This relieves the programmer from manual memory management while providing good performance.",
+    "example": "! Memory management is automatic in Factor\n: create-large-array ( -- array )\n    1000000 <array> ;\n\n: process-array ( -- )\n    create-large-array drop ;\n\n! The array will be automatically garbage collected when no longer needed"
+  },
+  {
+    "topic": "Factor's Optimizing Compiler",
+    "explanation": "Factor includes a sophisticated optimizing compiler that can produce efficient native code. It uses type inference, inlining, and other optimization techniques to improve performance.",
+    "example": "! The compiler automatically optimizes this\n: sum-range ( n -- sum )\n    0 swap [1,b] sum ;\n\n! Into an efficient loop without recursion"
+  },
+  {
+    "topic": "Tail Call Optimization in Factor",
+    "explanation": "Factor supports tail call optimization, allowing recursive functions to run in constant stack space when the recursive call is in tail position.",
+    "example": "! Tail-recursive factorial function\n: factorial ( n acc -- result )\n    over 0 <= [ nip ] [ [ 1 - ] dip over * factorial ] if ;\n\n: factorial ( n -- n! )\n    1 factorial ;\n\n! This can compute large factorials without stack overflow"
+  },
+  {
+    "topic": "Factor's Approach to Functional Programming",
+    "explanation": "While not purely functional, Factor supports many functional programming concepts, including higher-order functions, closures, and immutable data structures.",
+    "example": "USING: assocs sequences ;\n\n: word-histogram ( string -- assoc )\n    [ blank? ] split\n    [ dup length ] { } map>assoc ;\n\n\"hello world hello\" word-histogram .\n! Prints: H{ { \"world\" 5 } { \"hello\" 5 } }"
+  },
+  {
+    "topic": "Lazy Evaluation in Factor",
+    "explanation": "Factor supports lazy evaluation through its promise vocabulary, allowing for efficient handling of infinite sequences and delayed computation.",
+    "example": "USING: promises sequences ;\n\n: fib ( -- seq )\n    0 1 2promise [ [ + ] 2keep ] curry produce-by ;\n\n! Print first 10 Fibonacci numbers\nfib 10 head ."
+  },
+  {
+    "topic": "Factor's Standard Library",
+    "explanation": "Factor comes with a comprehensive standard library that covers areas such as data structures, algorithms, networking, cryptography, and more.",
+    "example": "USING: html.components http.server ;\n\n: hello-world ( -- response )\n    [ <html> [ <body> \"Hello, World!\" write ] with-html-writer ] call-response ;\n\n! Serve a simple web page\n8080 \"localhost\" hello-world <http-server> start-server"
+  },
+  {
+    "topic": "Factor's Foreign Function Interface (FFI)",
+    "explanation": "Factor's FFI allows seamless integration with C libraries, enabling access to system-level functionality and existing C code bases.",
+    "example": "USING: alien.syntax alien.c-types ;\n\nLIBRARY: libc\n\nFUNCTION: time ( time_t* -- time_t )\n\n: current-time ( -- n )\n    f time ;\n\ncurrent-time ."
+  },
+  {
+    "topic": "Reflection and Introspection in Factor",
+    "explanation": "Factor provides powerful reflection capabilities, allowing programs to examine and modify their structure at runtime.",
+    "example": "USING: mirrors prettyprint ;\n\n: print-slot-names ( obj -- )\n    <mirror> keys . ;\n\nTUPLE: person name age ;\n\"John\" 30 person boa print-slot-names\n! Prints: { \"age\" \"name\" }"
+  },
+  {
+    "topic": "Factor's Image-Based Development",
+    "explanation": "Factor uses an image-based development model, where the entire state of the system, including code and data, is persistently stored in a single file.",
+    "example": "! Save the current image\n\"my-factor-image\" save-image\n\n! Load a saved image\n\"my-factor-image\" run-factor"
+  },
+  {
+    "topic": "Factor's Vocabulary System",
+    "explanation": "Factor's vocabulary system provides a flexible way to organize and manage code, supporting features like selective importing, vocabularies with multiple files, and circular dependencies.",
+    "example": "IN: my-project.util\n: helper ( -- ) \"I'm a helper function\" print ;\n\nUSING: my-project.util\nIN: my-project.core\n: main ( -- ) helper ;"
+  },
+  {
+    "topic": "Best Practices in Factor Programming",
+    "explanation": "Some best practices in Factor include: using appropriate stack effect comments, favoring composition over abstraction, using combinators to abstract control flow, and leveraging Factor's vocabulary system for code organization.",
+    "example": "! Good: Clear stack effect comment\n: square ( n -- n^2 ) dup * ;\n\n! Good: Using combinators\n: print-if-positive ( n -- )\n    dup 0 > [ . ] [ drop ] if ;\n\n! Good: Composition\n: sum-of-squares ( seq -- n )\n    [ sq ] map sum ;"
+  },
+  {
+    "topic": "Debugging in Factor",
+    "explanation": "Factor provides various tools for debugging, including an interactive debugger, stack visualization, and the ability to inspect and modify the running program.",
+    "example": "! Set a breakpoint\n: buggy-function ( -- )\n    \"Before breakpoint\" print\n    <breakpoint>\n    \"After breakpoint\" print ;\n\n! Run with 'run-file' vocab to debug\nUSING: tools.deploy.debug ;\nbuggy-function"
+  },
+  {
+    "topic": "Performance Optimization in Factor",
+    "explanation": "Factor offers several ways to optimize performance, including declaring static types, using specialized sequences, and leveraging the optimizing compiler.",
+    "example": "USING: math.vectors specialized-arrays ;\nSPECIALIZED-ARRAY: float\n\n: fast-dot-product ( float-array float-array -- n )\n    [ float-array{ } declare ] bi@ v. ;"
+  },
+  {
+    "topic": "Factor in Scientific Computing",
+    "explanation": "While not as common as languages like Python or Julia in scientific computing, Factor's performance and expressive power make it suitable for numerical computations and data analysis.",
+    "example": "USING: math math.matrices math.vectors prettyprint ;\n\n{ { 1 2 } { 3 4 } } { 5 6 } v*\n    { 17 39 } v= .\n! Prints: t"
+  },
+  {
+    "topic": "Factor's Role in Web Development",
+    "explanation": "Factor includes libraries for web development, allowing creation of both server-side and client-side web applications.",
+    "example": "USING: furnace http.server ;\n\n: <my-app> ( -- dispatcher )\n    <dispatcher>\n        {\n            { \"hello\" [ \"Hello, World!\" write ] }\n            { \"time\" [ now timestamp>rfc822 write ] }\n        } >>dispatchs ;\n\n8080 <my-app> <http-server> start-server"
+  },
+  {
+    "topic": "Factor's Community and Ecosystem",
+    "explanation": "Factor has a small but dedicated community. The ecosystem includes a package manager ('vocab-tester'), a repository of community-contributed libraries, and various tools and applications written in Factor.",
+    "example": "! Using the vocab-tester to install a community package\nUSING: vocab-tester ;\n\"github:factor/factor-unmaintained\" clone-vocab"
   }
 ]
